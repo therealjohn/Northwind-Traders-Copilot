@@ -1,0 +1,214 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "Container",
+      "separator": true,
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "size": "large",
+                  "weight": "bolder",
+                  "text": "📦 Chai",
+                  "wrap": true,
+                  "style": "heading"
+                }
+              ],
+              "width": "60"
+            },
+            {
+              "type": "Column",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "In stock",
+                  "wrap": true,
+                  "horizontalAlignment": "Right",
+                  "isSubtle": true,
+                  "color": "good"
+                }
+              ],
+              "width": "40"
+            }
+          ]
+        }
+      ],
+      "bleed": true
+    },
+    {
+      "type": "Container",
+      "style": "emphasis",
+      "items": [
+        {
+          "type": "TextBlock",
+          "weight": "Bolder",
+          "text": "**📍Supplier information**",
+          "wrap": true,
+          "size": "Medium",
+          "isSubtle": false
+        },
+        {
+          "type": "ColumnSet",
+          "separator": true,
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "FactSet",
+                  "spacing": "Large",
+                  "facts": [
+                    {
+                      "title": "Name",
+                      "value": "Contoso Beverage Company"
+                    },
+                    {
+                      "title": "City",
+                      "value": "London"
+                    }
+                  ],
+                  "separator": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "TextBlock",
+          "weight": "Bolder",
+          "text": "**🛒 Product information**",
+          "wrap": true,
+          "size": "Medium",
+          "isSubtle": false
+        },
+        {
+          "type": "ColumnSet",
+          "separator": true,
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "FactSet",
+                  "spacing": "Large",
+                  "facts": [
+                    {
+                      "title": "Category",
+                      "value": "Beverages"
+                    },
+                    {
+                      "title": "Unit price",
+                      "value": "18 USD"
+                    },
+                    {
+                      "title": "Avg discount",
+                      "value": "8.6 %"
+                    },
+                    {
+                      "title": "Inventory valuation",
+                      "value": "6,300 USD"
+                    }
+                  ],
+                  "separator": true
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "FactSet",
+                  "spacing": "Large",
+                  "facts": [
+                    {
+                      "title": "Units in stock",
+                      "value": "350"
+                    },
+                    {
+                      "title": "Units on order",
+                      "value": "0"
+                    },
+                    {
+                      "title": "Reorder Level",
+                      "value": "25"
+                    },
+                    {
+                      "title": "Revenue this period",
+                      "value": "12,788 USD"
+                    }
+                  ],
+                  "separator": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ActionSet",
+          "actions": [
+            {
+              "type": "Action.ShowCard",
+              "title": "Take action",
+              "card": {
+                "type": "AdaptiveCard",
+                "body": [
+                  {
+                    "type": "Input.Text",
+                    "id": "txtStock",
+                    "label": "Quantity",
+                    "min": 0,
+                    "max": 9999,
+                    "errorMessage": "Invalid input, use whole positive number",
+                    "style": "Tel"
+                  }
+                ],
+                "actions": [
+                  {
+                    "type": "Action.Execute",
+                    "title": "Update stock ✅",
+                    "verb": "ok",
+                    "data": {
+                      "productId": 1
+                    }
+                  },
+                  {
+                    "type": "Action.Execute",
+                    "title": "Restock 📦",
+                    "verb": "restock",
+                    "data": {
+                      "productId": 1
+                    }
+                  },
+                  {
+                    "type": "Action.Execute",
+                    "title": "Cancel restock ❌",
+                    "verb": "cancel",
+                    "data": {
+                      "productId": 1
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

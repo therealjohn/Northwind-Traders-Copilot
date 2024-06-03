@@ -12,7 +12,7 @@ import actionHandler from "../adaptiveCards/cardHandler";
 import cardHandler from "../adaptiveCards/cardHandler";
 import exampleCard from "../adaptiveCards/exampleCardActivity.json";
 import * as ACData from "adaptivecards-templating";
-import { getProduct } from '../messageExtensions/productMap';
+import fs from 'fs';
 import { handleCancelOrder, handleCreateOrder, handleGetOrder } from "./actions";
 import { ApplicationTurnState } from "./turnState";
 import { searchProducts } from "../northwindDB/products";
@@ -27,7 +27,11 @@ const model = new OpenAIModel({
   azureApiKey: config.azureOpenAIKey,
   azureDefaultDeployment: config.azureOpenAIDeploymentName,
   azureEndpoint: config.azureOpenAIEndpoint,
-  azureApiVersion: '2024-02-15-preview',
+
+
+  azureApiVersion: '2024-02-01',
+  retryPolicy: [2000, 3000, 4000],
+  responseFormat: { type: 'json_object' },
   useSystemMessages: true,
   logRequests: true,
 });
@@ -41,7 +45,7 @@ const planner = new ActionPlanner({
   prompts,
   defaultPrompt: async () => {
     const template = await prompts.getPrompt('chat');
-
+    const skprompt = fs.readFileSync(path.join(__dirname, '..', 'prompts', 'chat', 'skprompt.txt'));
     //
     // Use the Azure AI Search data source for RAG over documents
     //
@@ -52,6 +56,7 @@ const planner = new ActionPlanner({
         if (dataSource.type === 'azure_search' && dataSource.parameters) {
           dataSource.parameters.authentication.key = config.azureSearchKey;
           dataSource.parameters.endpoint = config.azureSearchEndpoint;
+          dataSource.parameters.role_information = `${skprompt.toString('utf-8')} \n\nActions: ${JSON.stringify(template.actions, null, 2)}`;
         }
       });
     } else {
@@ -67,7 +72,8 @@ export const app = new Application<ApplicationTurnState>({
   storage,
   ai: {
     planner: planner,
-    enable_feedback_loop: true
+    enable_feedback_loop: true,
+    allow_looping: true
   },
   adapter: new TeamsAdapter(
     {},
@@ -93,34 +99,37 @@ app.ai.action("getProduct", handleGetProduct);
 export async function handleGetProduct(context: TurnContext, state: ApplicationTurnState, parameters: any) {
   const products = await searchProducts(parameters.productName, '', '', '', '');
   if (products.length > 0) {
-      const firstProduct = products[0];
-      const resultCard = cardHandler.getEditCard(firstProduct, false);
-      const attachment = { ...resultCard };
+    const firstProduct = products[0];
+    const resultCard = cardHandler.getEditCard(firstProduct, false);
+    const attachment = { ...resultCard };
 
-      await context.sendActivity({
-        attachments: [attachment], 
-        channelData: { feedbackLoopEnabled: true },
-        entities: [{ 
-          type: "https://schema.org/Message",
-          "@type": "Message",
-          "@context": "https://schema.org",
-          "@id": "",
-          additionalType: ["AIGeneratedContent"],
-          usageInfo: {
-            name: "Northwind Confidentional",
-            description: "Please don't share outside of the company.",
-          },
-        }]
-      });
+    await context.sendActivity({
+      attachments: [attachment],
+      channelData: { feedbackLoopEnabled: true },
+      entities: [{
+        type: "https://schema.org/Message",
+        "@type": "Message",
+        "@context": "https://schema.org",
+        "@id": "",
+        additionalType: ["AIGeneratedContent"],
+        usageInfo: {
+          name: "Northwind Confidentional",
+          description: "Please don't share outside of the company.",
+        },
+      }]
+    });
 
-      return AI.StopCommandName;
+    return AI.StopCommandName;
   } else {
-      return `No product found for ${parameters.productName}. think about your next action`;
+    return `No product found for ${parameters.productName}. think about your next action`;
   }
 }
 
-// Copilot plugin handoff
+//
+// Copilot plugin handoff handler
+// Note: Use the continuation value to restore state and continue the conversation...
 app.handoff(async (context: TurnContext, state: ApplicationTurnState, continuation: string) => {
+  // Example: Let the user know that the conversation is being continued from Copilot.
   await context.sendActivities([
     {
       type: ActivityTypes.Message,
@@ -128,21 +137,21 @@ app.handoff(async (context: TurnContext, state: ApplicationTurnState, continuati
     },
     { type: ActivityTypes.Typing },
     { type: "delay", value: 1000 },
-  ]);
-
-  // For demonstration, just send a card for this example product to the user.
-  const adaptiveCard = CardFactory.adaptiveCard(new ACData.Template(exampleCard).expand({}));
+  ]);  
   
-  await context.sendActivity({ 
-    attachments: [adaptiveCard], 
-    channelData: { feedbackLoopEnabled: true },
-    entities: [{ 
+  const adaptiveCard = CardFactory.adaptiveCard(new ACData.Template(exampleCard).expand({}));
+
+  // Example: Send a card for this example product to the user.
+  await context.sendActivity({
+    attachments: [adaptiveCard],
+    channelData: { feedbackLoopEnabled: true }, // Enable the thumbs up/down feedback loop
+    entities: [{
       type: "https://schema.org/Message",
       "@type": "Message",
       "@context": "https://schema.org",
       "@id": "",
-      additionalType: ["AIGeneratedContent"],
-      usageInfo: {
+      additionalType: ["AIGeneratedContent"],   // AI Generated label
+      usageInfo: {                              // Sensitivity label
         name: "Northwind Confidentional",
         description: "Please don't share outside of the company.",
       },
@@ -155,7 +164,9 @@ app.feedbackLoop(async (context: TurnContext, state: ApplicationTurnState, feedb
   console.log('Feedback received:', feedback);
 });
 
+//
 // Handle message extension queries
+//
 app.messageExtensions.query(productSearchCommand.COMMAND_ID, async (context: TurnContext, state: ApplicationTurnState, query) => {
   let messageExtensionQuery: MessagingExtensionQuery = {
     parameters: Object.keys(query.parameters).map(key => ({ name: key, value: query.parameters[key] })),
@@ -180,7 +191,9 @@ app.messageExtensions.query(revenueSearchCommand.COMMAND_ID, async (context: Tur
   return revenueSearchCommand.handleTeamsMessagingExtensionQuery(context, messageExtensionQuery);
 });
 
+//
 // Handle adaptive card actions
+//
 app.adaptiveCards.actionExecute("ok", async (context: TurnContext, state: ApplicationTurnState) => {
   return actionHandler.handleTeamsCardActionUpdateStock(context);
 });
@@ -213,5 +226,60 @@ app.error(async (context: TurnContext, err: Error) => {
     );
   }
 });
+
+// Example of how to override the say command with custom logic
+// app.ai.action<PredictedSayCommand>(AI.SayCommandActionName, async (context, state, data, action) => {
+//   if (!data.response?.content) {
+//     return '';
+//   }
+
+//   let content = data.response.content;
+//   const isTeamsChannel = context.activity.channelId === Channels.Msteams;
+
+//   if (isTeamsChannel) {
+//     content = content.split('\n').join('<br>');
+//   }
+
+//   // If the response from AI includes citations, those citations will be parsed and added to the SAY command.
+//   let citations: ClientCitation[] | undefined = undefined;
+
+//   if (data.response.context && data.response.context.citations.length > 0) {
+//     citations = data.response.context!.citations.map((citation, i) => {
+//       return {
+//         '@type': 'Claim',
+//         position: `${i + 1}`,
+//         appearance: {
+//           '@type': 'DigitalDocument',
+//           name: citation.title,
+//           abstract: Utilities.snippet(citation.content, 500)
+//         }
+//       } as ClientCitation;
+//     });
+//   }
+
+//   // If there are citations, modify the content so that the sources are numbers instead of [doc1], [doc2], etc.
+//   const contentText = !citations ? content : Utilities.formatCitationsResponse(content);
+
+//   // If there are citations, filter out the citations unused in content.
+//   const referencedCitations = citations ? Utilities.getUsedCitations(contentText, citations) : undefined;
+
+//   await context.sendActivity({
+//     type: ActivityTypes.Message,
+//     text: contentText,
+//     ...(isTeamsChannel ? { channelData: { feedbackLoopEnabled: true } } : {}),
+//     entities: [
+//       {
+//         type: 'https://schema.org/Message',
+//         '@type': 'Message',
+//         '@context': 'https://schema.org',
+//         '@id': '',
+//         additionalType: ['AIGeneratedContent'],
+//         ...(referencedCitations ? { citation: referencedCitations } : {})
+//       }
+//     ] as AIEntity[]
+//   });
+
+//   return '';
+// });
 
 export default app;

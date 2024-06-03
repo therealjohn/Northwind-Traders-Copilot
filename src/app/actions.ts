@@ -1,8 +1,6 @@
 import { TurnContext } from "botbuilder";
-import { Order, ProductEx } from "../northwindDB/model";
-import { getAllProductsEx, searchProducts } from "../northwindDB/products";
-import { AI, DefaultConversationState } from "@microsoft/teams-ai";
-import cardHandler from "../adaptiveCards/cardHandler";
+import { Order } from "../northwindDB/model";
+import { getAllProductsEx } from "../northwindDB/products";
 import { ApplicationTurnState, ConversationState } from "./turnState";
   
 export async function handleCreateOrder(context: TurnContext, state: ApplicationTurnState, parameters: Order) {

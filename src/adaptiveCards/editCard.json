@@ -1,154 +1,138 @@
 {
-    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
     "type": "AdaptiveCard",
+    "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
     "version": "1.5",
+    "msTeams": {
+        "width": "full"
+    },
     "body": [
         {
-            "type": "Container",
-            "separator": true,
-            "items": [
+            "type": "ColumnSet",
+            "columns": [
                 {
-                    "type": "ColumnSet",
-                    "columns": [
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
                         {
-                            "type": "Column",
-                            "items": [
+                            "type": "ColumnSet",
+                            "columns": [                                
                                 {
-                                    "type": "TextBlock",
-                                    "size": "large",
-                                    "weight": "bolder",
-                                    "text": "📦 ${productName}",
-                                    "wrap": true,
-                                    "style": "heading"
+                                    "type": "Column",
+                                    "verticalContentAlignment": "Center",
+                                    "items": [
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "${productName}",
+                                            "weight": "Bolder",
+                                            "size": "large"
+                                        }
+                                    ]
                                 }
-                            ],
-                            "width": "60"
-                        },
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "targetWidth": "atLeast:Narrow",
+                    "items": [
                         {
-                            "type": "Column",
-                            "items": [
+                            "type": "ColumnSet",
+                            "height": "stretch",
+                            "columns": [
                                 {
-                                    "type": "TextBlock",
-                                    "text": "${inventoryStatus}",
-                                    "wrap": true,
-                                    "horizontalAlignment": "Right",
-                                    "isSubtle": true,
-                                    "color": "${if(inventoryStatus == 'In stock', 'good', if(inventoryStatus == 'low stock', 'warning', 'attention'))}"
+                                    "type": "Column",
+                                    "spacing": "Small",
+                                    "verticalContentAlignment": "Center",
+                                    "items": [
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "${inventoryStatus}",
+                                            "weight": "Bolder",
+                                            "color": "${if(inventoryStatus == 'In stock', 'good', if(inventoryStatus == 'low stock', 'warning', 'attention'))}"
+                                        }
+                                    ]
                                 }
-                            ],
-                            "width": "40"
+                            ]
                         }
                     ]
                 }
-            ],
-            "bleed": true
-        },
+            ]
+        },        
         {
-            "type": "Container",
-            "style": "emphasis",
-            "items": [
+            "type": "ColumnSet",
+            "columns": [
                 {
-                    "type": "TextBlock",
-                    "weight": "Bolder",
-                    "text": "**📍Supplier information**",
-                    "wrap": true,
-                    "size": "Medium",
-                    "isSubtle": false
-                },
-                {
-                    "type": "ColumnSet",
-                    "separator": true,
-                    "columns": [
+                    "type": "Column",
+                    "width": 50,
+                    "items": [
                         {
-                            "type": "Column",
-                            "width": "stretch",
-                            "items": [
-                                {
-                                    "type": "FactSet",
-                                    "spacing": "Large",
-                                    "facts": [
-                                        {
-                                            "title": "Name",
-                                            "value": "${supplierName}"
-                                        },
-                                        {
-                                            "title": "City",
-                                            "value": "${supplierCity}"
-                                        }
-                                    ],
-                                    "separator": true
-                                }
-                            ]
+                            "type": "TextBlock",
+                            "text": "Supplier",
+                            "size": "Small",
+                            "weight": "Bolder"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "spacing": "None",
+                            "text": "${supplierName}"
                         }
                     ]
                 },
                 {
-                    "type": "TextBlock",
-                    "weight": "Bolder",
-                    "text": "**🛒 Product information**",
-                    "wrap": true,
-                    "size": "Medium",
-                    "isSubtle": false
-                },
-                {
-                    "type": "ColumnSet",
-                    "separator": true,
-                    "columns": [
+                    "type": "Column",
+                    "targetWidth": "atLeast:Standard",
+                    "width": 25,
+                    "items": [
                         {
-                            "type": "Column",
-                            "width": "stretch",
-                            "items": [
-                                {
-                                    "type": "FactSet",
-                                    "spacing": "Large",
-                                    "facts": [
-                                        {
-                                            "title": "Category",
-                                            "value": "${categoryName}"
-                                        },
-                                        {
-                                            "title": "Unit price",
-                                            "value": "${unitPrice} USD"
-                                        },
-                                        {
-                                            "title": "Avg discount",
-                                            "value": "${string(averageDiscount)} %"
-                                        },
-                                        {
-                                            "title": "Inventory valuation",
-                                            "value": "${string(inventoryValue)} USD"
-                                        }
-                                    ],
-                                    "separator": true
-                                }
-                            ]
+                            "type": "TextBlock",
+                            "text": "City",
+                            "size": "Small",
+                            "weight": "Bolder"
                         },
                         {
-                            "type": "Column",
-                            "width": "stretch",
-                            "items": [
+                            "type": "TextBlock",
+                            "spacing": "None",
+                            "text": "${supplierCity}"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "targetWidth": "atLeast:Standard",
+                    "width": 25,
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Owner",
+                            "size": "Small",
+                            "weight": "Bolder"
+                        },
+                        {
+                            "type": "ColumnSet",
+                            "spacing": "None",
+                            "columns": [
                                 {
-                                    "type": "FactSet",
-                                    "spacing": "Large",
-                                    "facts": [
+                                    "type": "Column",
+                                    "width": "auto",
+                                    "items": [
                                         {
-                                            "title": "Units in stock",
-                                            "value": "${string(unitsInStock)}"
-                                        },
-                                        {
-                                            "title": "Units on order",
-                                            "value": "${string(unitsOnOrder)}"
-                                        },
-                                        {
-                                            "title": "Reorder Level",
-                                            "value": "${string(reorderLevel)}"
-                                        },
-                                        {
-                                            "title": "Revenue this period",
-                                            "value": "${string(revenue)} USD"
+                                            "type": "Image",
+                                            "url": "https://build2024acdemoassets.z22.web.core.windows.net/retaTaylorAvatar.png",
+                                            "width": "20px"
                                         }
-                                    ],
-                                    "separator": true
+                                    ]
+                                },
+                                {
+                                    "type": "Column",
+                                    "spacing": "Small",
+                                    "items": [
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "Reta Taylor"
+                                        }
+                                    ]
                                 }
                             ]
                         }
@@ -158,53 +142,220 @@
         },
         {
             "type": "Container",
+            "targetWidth": "atMost:Narrow",
+            "spacing": "Small",
             "items": [
                 {
-                    "type": "ActionSet",
-                    "actions": [
+                    "type": "TextBlock",
+                    "text": "City",
+                    "size": "Small",
+                    "weight": "Bolder"
+                },
+                {
+                    "type": "TextBlock",
+                    "spacing": "None",
+                    "text": "${supplierCity}"
+                }
+            ]
+        },
+        {
+            "type": "Container",
+            "targetWidth": "atMost:Narrow",
+            "spacing": "Small",
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "text": "Owner",
+                    "size": "Small",
+                    "weight": "Bolder"
+                },
+                {
+                    "type": "ColumnSet",
+                    "spacing": "None",
+                    "columns": [
                         {
-                            "type": "Action.ShowCard",
-                            "title": "Take action",
-                            "card": {
-                                "type": "AdaptiveCard",
-                                "body": [
-                                    {
-                                        "type": "Input.Text",
-                                        "id": "txtStock",
-                                        "label": "Quantity",
-                                        "min": 0,
-                                        "max": 9999,
-                                        "errorMessage": "Invalid input, use whole positive number",
-                                        "style": "Tel"
-                                    }
-                                ],
-                                "actions": [
-                                    {
-                                        "type": "Action.Execute",
-                                        "title": "Update stock ✅",
-                                        "verb": "ok",
-                                        "data": {
-                                            "productId": "${productId}"
-                                        }
-                                    },
-                                    {
-                                        "type": "Action.Execute",
-                                        "title": "Restock 📦",
-                                        "verb": "restock",
-                                        "data": {
-                                            "productId": "${productId}"
-                                        }
-                                    },
-                                    {
-                                        "type": "Action.Execute",
-                                        "title": "Cancel restock ❌",
-                                        "verb": "cancel",
-                                        "data": {
-                                            "productId": "${productId}"
-                                        }
-                                    }
-                                ]
-                            }
+                            "type": "Column",
+                            "width": "auto",
+                            "items": [
+                                {
+                                    "type": "Image",
+                                    "url": "https://build2024acdemoassets.z22.web.core.windows.net/retaTaylorAvatar.png",
+                                    "width": "20px"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Column",
+                            "spacing": "Small",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "Reta Taylor"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "TextBlock",
+            "text": "${productName} Inventory Status",
+            "weight": "Bolder",
+            "separator": true,
+            "size": "Small",
+            "spacing": "ExtraLarge"
+        },
+        {
+            "type": "Container",
+            "style": "emphasis",
+            "roundedCorners": true,
+            "showBorder": true,
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "text": "Trend",
+                    "weight": "Bolder",
+                    "wrap": true
+                },
+                {
+                    "type": "TextBlock",
+                    "text": "+165 (89.19%) ▲ MoM",
+                    "weight": "Bolder",
+                    "color": "Good",
+                    "spacing": "None",
+                    "wrap": true
+                },
+                {
+                    "type": "Chart.Line",
+                    "targetWidth": "atLeast:Narrow",
+                    "title": "${productName} Inventory Status",
+                    "data": [
+                        {
+                            "legend": "Northwind Traders",
+                            "color": "sequential6",
+                            "values": [
+                                {
+                                    "x": "2024-01-01",
+                                    "y": 100
+                                },
+                                {
+                                    "x": "2024-02-01",
+                                    "y": 125
+                                },
+                                {
+                                    "x": "2024-03-01",
+                                    "y": 225
+                                },
+                                {
+                                    "x": "2024-04-01",
+                                    "y": 185
+                                },
+                                {
+                                    "x": "2024-05-01",
+                                    "y": 350
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "TextBlock",
+            "text": "Stock information",
+            "weight": "Bolder",
+            "size": "Small",
+            "separator": true,
+            "spacing": "ExtraLarge"
+        },
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "items": [
+                        {
+                            "type": "FactSet",
+                            "facts": [
+                                {
+                                    "title": "Category",
+                                    "value": "${categoryName}"
+                                },
+                                {
+                                    "title": "Unit price",
+                                    "value": "${unitPrice} USD"
+                                },
+                                {
+                                    "title": "Avg discount",
+                                    "value": "${string(averageDiscount)} %"
+                                },
+                                {
+                                    "title": "Inventory valuation",
+                                    "value": "${string(inventoryValue)} USD"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "items": [
+                        {
+                            "type": "FactSet",
+                            "facts": [
+                                {
+                                    "title": "Units in stock",
+                                    "value": "${string(unitsInStock)}"
+                                },
+                                {
+                                    "title": "Units on order",
+                                    "value": "${string(unitsOnOrder)}"
+                                },
+                                {
+                                    "title": "Reorder level",
+                                    "value": "${string(reorderLevel)}"
+                                },
+                                {
+                                    "title": "Revenue this perios",
+                                    "value": "${string(revenue)} USD"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ColumnSet",
+            "separator": true,
+            "spacing": "ExtraLarge",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "https://build2024acdemoassets.z22.web.core.windows.net/kadjiBellAvatar.png",
+                            "height": "36px"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "verticalContentAlignment": "Center",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Kadji Bell"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "Northwind Supply Specialist",
+                            "size": "Small",
+                            "spacing": "None",
+                            "isSubtle": true
                         }
                     ]
                 }

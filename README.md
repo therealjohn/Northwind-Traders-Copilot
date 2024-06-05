@@ -14,6 +14,13 @@ A sample custom copilot for Teams built for BRK146 at Microsoft Build 2024. [Wat
 > - `AZURE_OPENAI_DEPLOYMENT_NAME=YOUR AZURE OPENAI DEPLOYMENT NAME`
 > - `SECRET_AZURE_SEARCH_ENDPOINT=YOUR AZURE SEARCH ENDPOINT`
 > - `SECRET_AZURE_SEARCH_KEY=YOUR AZURE SEARCH KEY`
+> 
+> This sample uses Azurite for local Azure storage to contain the sample product data.
+> Install the Azurite VS Code extension first so the database script can seed the database.
+> 
+> An Azure AI Search index was created and named `documents`. This contains the [sample docs](https://github.com/OfficeDev/Copilot-for-M365-Plugins-Samples/tree/main/samples/msgext-northwind-inventory-ts/sampleDocs) in an Azure Blob container.
+>
+> Next, run `npm install` before attempting to F5.
 >
 > Azure Open AI is used for the language model. Tested with GPT-4.
 > At the time of testing, this required features in the Teams client that are coming soon. If you do not see some of the features, they are not released yet.

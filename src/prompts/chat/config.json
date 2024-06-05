@@ -3,7 +3,6 @@
   "description": "A bot that can chat with users",
   "type": "completion",
   "completion": {    
-    "deployment": "northwind-inventory",
     "completion_type": "chat",
     "include_history": true,
     "include_input": true,

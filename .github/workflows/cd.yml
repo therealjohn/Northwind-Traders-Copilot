@@ -26,7 +26,7 @@ jobs:
         env:
           CERTIFICATE_BASE64: ${{ secrets.AZURE_SERVICE_PRINCIPAL_CERTIFICATE_BASE64 }}
         run: |
-          echo $CERTIFICATE_BASE64 | base64 --decode > cert.pem
+          echo $CERTIFICATE_BASE64 > cert.pem
 
       - name: Login Azure by service principal
         run: |

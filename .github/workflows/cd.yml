@@ -1,0 +1,52 @@
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TEAMSAPP_CLI_VERSION: "3.0.7"
+      # Add extra environment variables here so that teamsapp cli can use them.
+
+    steps:
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: "20.x"
+
+      - name: install cli
+        run: |
+          npm install @microsoft/teamsapp-cli@${{env.TEAMSAPP_CLI_VERSION}}
+
+      - name: Retrieve the secret and decode it to a file
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.AZURE_SERVICE_PRINCIPAL_CERTIFICATE_BASE64 }}
+        run: |
+          echo $CERTIFICATE_BASE64 | base64 --decode > cert.pem
+
+      - name: Login Azure by service principal
+        run: |
+          npx teamsapp auth login azure --username ${{vars.AZURE_SERVICE_PRINCIPAL_CLIENT_ID}}  \
+          --service-principal true \
+          --tenant ${{vars.AZURE_TENANT_ID}} \
+          --password cert.pem \
+          --interactive false
+
+      - name: Deploy to hosting environment
+        run: |
+          npx teamsapp deploy --ignore-env-file true \
+          --interactive false
+
+      - name: Package app
+        run: |
+          npx teamsapp package
+
+      - name: upload appPackage
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact
+          path: appPackage/build/appPackage.zip

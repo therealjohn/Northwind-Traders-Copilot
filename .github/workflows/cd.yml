@@ -7,7 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TEAMSAPP_CLI_VERSION: "3.0.7"
-      # Add extra environment variables here so that teamsapp cli can use them.
+      BOT_AZURE_APP_SERVICE_RESOURCE_ID: ${{secrets.BOT_AZURE_APP_SERVICE_RESOURCE_ID}}
+      BOT_ID: ${{secrets.BOT_ID}}
+      TEAMS_APP_ID: ${{secrets.TEAMS_APP_ID}}
 
     steps:
       - name: "Checkout GitHub Action"

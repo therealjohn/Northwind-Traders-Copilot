@@ -6,8 +6,9 @@ on:
     types: 
       - completed
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     env:
       TEAMSAPP_CLI_VERSION: "3.0.7"
       BOT_AZURE_APP_SERVICE_RESOURCE_ID: ${{secrets.BOT_AZURE_APP_SERVICE_RESOURCE_ID}}

@@ -44,7 +44,7 @@ jobs:
 
       - name: Package app
         run: |
-          npx teamsapp package --env .env
+          npx teamsapp package --env-file .env
 
       - name: upload appPackage
         uses: actions/upload-artifact@v4

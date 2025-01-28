@@ -26,7 +26,7 @@ jobs:
 
       - name: Login Azure by service principal
         run: |
-          npx teamsapp auth login azure --username ${{secrets.AZURE_SERVICE_PRINCIPAL_CLIENT_ID}}  \
+          teamsapp auth login azure --username ${{secrets.AZURE_SERVICE_PRINCIPAL_CLIENT_ID}}  \
           --service-principal true \
           --tenant ${{secrets.AZURE_TENANT_ID}} \
           --password ${{secrets.AZURE_SERVICE_PRINCIPAL_CLIENT_SECRET }} \
@@ -34,7 +34,7 @@ jobs:
 
       - name: Deploy to hosting environment
         run: |
-          npx teamsapp deploy --ignore-env-file true \
+          teamsapp deploy --ignore-env-file true \
           --interactive false
 
       - name: Create .env file
@@ -44,7 +44,7 @@ jobs:
 
       - name: Package app
         run: |
-          npx teamsapp package --env ./.env
+          teamsapp package --env .env
 
       - name: upload appPackage
         uses: actions/upload-artifact@v4

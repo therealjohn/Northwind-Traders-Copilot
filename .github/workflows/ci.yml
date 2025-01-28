@@ -1,0 +1,43 @@
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TEAMSAPP_CLI_VERSION: "3.0.7"
+      BOT_AZURE_APP_SERVICE_RESOURCE_ID: ${{secrets.BOT_AZURE_APP_SERVICE_RESOURCE_ID}}
+      BOT_ID: ${{secrets.BOT_ID}}
+      TEAMS_APP_ID: ${{secrets.TEAMS_APP_ID}}
+
+    steps:
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: "20.x"
+
+      - name: install cli
+        run: |
+          npm install @microsoft/teamsapp-cli@${{env.TEAMSAPP_CLI_VERSION}}
+
+      - name: Create .env file
+        run: |
+          echo "BOT_ID=${{secrets.BOT_ID}}" >> .env
+          echo "TEAMS_APP_ID=${{secrets.TEAMS_APP_ID}}" >> .env
+          echo "TEAMSFX_ENV=dev" >> .env
+
+      - name: Validate manifest schema
+        run: |
+          npx teamsapp validate --env-file .env
+
+      - name: Package app
+        run: |
+          npx teamsapp package --env-file .env
+
+      - name: Validate app package
+        run: |
+          npx teamsapp validate --env-file .env --package-file appPackage/build/appPackage.zip

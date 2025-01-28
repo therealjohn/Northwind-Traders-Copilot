@@ -27,9 +27,9 @@ jobs:
         run: |
           npm install @microsoft/teamsapp-cli@${{env.TEAMSAPP_CLI_VERSION}}
 
-      - name: Login M365
-        run: |
-          npx teamsapp auth login m365 --interactive false
+      # - name: Login M365
+      #   run: |
+      #     npx teamsapp auth login m365 --interactive false
 
       - name: Create .env file
         run: |

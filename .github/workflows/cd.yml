@@ -37,9 +37,14 @@ jobs:
           npx teamsapp deploy --ignore-env-file true \
           --interactive false
 
+      - name: Create .env file
+        run: |
+          echo "BOT_ID=${{secrets.BOT_ID}}" >> .env
+          echo "TEAMS_APP_ID=${{secrets.TEAMS_APP_ID}}" >> .env
+
       - name: Package app
         run: |
-          npx teamsapp package
+          npx teamsapp package --env ./.env
 
       - name: upload appPackage
         uses: actions/upload-artifact@v4

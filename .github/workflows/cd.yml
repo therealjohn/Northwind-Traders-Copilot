@@ -6,6 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      TEAMSAPP_CLI_VERSION: "3.0.7"
       BOT_AZURE_APP_SERVICE_RESOURCE_ID: ${{secrets.BOT_AZURE_APP_SERVICE_RESOURCE_ID}}
       BOT_ID: ${{secrets.BOT_ID}}
       TEAMS_APP_ID: ${{secrets.TEAMS_APP_ID}}
@@ -18,6 +19,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "20.x"
+
+      - name: install cli
+        run: |
+          npm install @microsoft/teamsapp-cli@${{env.TEAMSAPP_CLI_VERSION}}
 
       - name: Login Azure by service principal
         run: |

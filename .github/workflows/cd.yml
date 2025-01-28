@@ -41,6 +41,7 @@ jobs:
         run: |
           echo "BOT_ID=${{secrets.BOT_ID}}" >> .env
           echo "TEAMS_APP_ID=${{secrets.TEAMS_APP_ID}}" >> .env
+          echo "TEAMSFX_ENV=dev" >> .env
 
       - name: Package app
         run: |

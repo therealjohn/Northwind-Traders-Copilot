@@ -1,3 +1,4 @@
+name: "TeamsApp CI"
 on:
   push:
     branches:

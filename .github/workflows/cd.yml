@@ -1,7 +1,10 @@
+name: "TeamsApp CD"
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["TeamsApp CI"]
+    branches: [main]
+    types: 
+      - completed
 jobs:
   build:
     runs-on: ubuntu-latest

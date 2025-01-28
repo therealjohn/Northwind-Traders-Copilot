@@ -10,6 +10,8 @@ jobs:
       BOT_AZURE_APP_SERVICE_RESOURCE_ID: ${{secrets.BOT_AZURE_APP_SERVICE_RESOURCE_ID}}
       BOT_ID: ${{secrets.BOT_ID}}
       TEAMS_APP_ID: ${{secrets.TEAMS_APP_ID}}
+      M365_ACCOUNT_NAME: ${{secrets.M365_ACCOUNT_NAME}}
+      M365_ACCOUNT_PASSWORD: ${{secrets.M365_ACCOUNT_PASSWORD}}
 
     steps:
       - name: "Checkout GitHub Action"
@@ -23,6 +25,10 @@ jobs:
       - name: install cli
         run: |
           npm install @microsoft/teamsapp-cli@${{env.TEAMSAPP_CLI_VERSION}}
+
+      - name: Login M365
+        run: |
+          npx teamsapp auth login m365 --interactive false
 
       - name: Create .env file
         run: |

@@ -22,18 +22,12 @@ jobs:
         run: |
           npm install @microsoft/teamsapp-cli@${{env.TEAMSAPP_CLI_VERSION}}
 
-      - name: Retrieve the secret and decode it to a file
-        env:
-          CERTIFICATE_BASE64: ${{ secrets.AZURE_SERVICE_PRINCIPAL_CERTIFICATE_BASE64 }}
-        run: |
-          echo $CERTIFICATE_BASE64 > cert.pem
-
       - name: Login Azure by service principal
         run: |
           npx teamsapp auth login azure --username ${{secrets.AZURE_SERVICE_PRINCIPAL_CLIENT_ID}}  \
           --service-principal true \
           --tenant ${{secrets.AZURE_TENANT_ID}} \
-          --password cert.pem \
+          --password ${{secrets.AZURE_SERVICE_PRINCIPAL_CLIENT_SECRET }} \
           --interactive false
 
       - name: Deploy to hosting environment
